@@ -23,3 +23,5 @@
 .DS_Store
 Thumbs.db
 /.idea/dataSources.local.xml
+/.idea/dataSources.xml
+/.idea/workspace.xml
