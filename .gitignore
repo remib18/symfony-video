@@ -22,3 +22,4 @@
 # MacOS ; Windows
 .DS_Store
 Thumbs.db
+/.idea/dataSources.local.xml
