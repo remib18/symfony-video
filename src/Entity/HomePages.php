@@ -19,10 +19,6 @@ class HomePages
     #[ORM\Column(length: 255)]
     private ?string $markdown = null;
 
-    #[ORM\ManyToOne(inversedBy: 'active_homepage')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?WebsiteSettings $websiteSettings = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -48,18 +44,6 @@ class HomePages
     public function setMarkdown(string $markdown): static
     {
         $this->markdown = $markdown;
-
-        return $this;
-    }
-
-    public function getWebsiteSettings(): ?WebsiteSettings
-    {
-        return $this->websiteSettings;
-    }
-
-    public function setWebsiteSettings(?WebsiteSettings $websiteSettings): static
-    {
-        $this->websiteSettings = $websiteSettings;
 
         return $this;
     }
