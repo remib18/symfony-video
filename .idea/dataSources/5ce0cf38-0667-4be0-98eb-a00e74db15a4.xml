@@ -1159,8 +1159,8 @@ test\\_%|schema||&apos;&apos;||UPDATE|G</Grants>
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="330" parent="1" name="symfony-video-1">
-      <IntrospectionTimestamp>2023-11-18.11:18:21</IntrospectionTimestamp>
-      <LocalIntrospectionTimestamp>2023-11-18.09:18:21</LocalIntrospectionTimestamp>
+      <IntrospectionTimestamp>2023-11-18.12:43:17</IntrospectionTimestamp>
+      <LocalIntrospectionTimestamp>2023-11-18.10:43:17</LocalIntrospectionTimestamp>
       <CollationName>utf8mb4_general_ci</CollationName>
     </schema>
     <schema id="331" parent="1" name="td1">
@@ -1379,7 +1379,7 @@ test\\_%|schema||&apos;&apos;||UPDATE|G</Grants>
       <UnderlyingIndexName>UNIQ_8D93D649E7927C74</UnderlyingIndexName>
     </key>
     <column id="378" parent="342" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>3</AutoIncrement>
       <DasType>int(11)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>

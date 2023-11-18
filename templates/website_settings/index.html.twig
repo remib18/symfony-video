@@ -1,33 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}WebsiteSettings index{% endblock %}
+{% block title %}HomePages index{% endblock %}
 
 {% block body %}
-    <h1>WebsiteSettings index</h1>
+    <h1>HomePages index</h1>
+
+    <h2>Active HomePage:
+        <form action="{{ path('app_website_settings_set_active_homepage', {'id': active_homepage.id}) }}" method="post">
+            <label>
+                <select name="active_homepage" onchange="this.form.action = this.form.action.replace(/\/\d+$/, '/' + this.value); this.form.submit()">
+                    {% for home_page in home_pages %}
+                        <option value="{{ home_page.id }}" {% if home_page.id == active_homepage.id %}selected{% endif %}>{{ home_page.label }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+        </form>
+    </h2>
+
+    <a href="{{ path('app_website_settings_new') }}">Create new HomePage</a>
 
     <table class="table">
         <thead>
-            <tr>
-                <th>Id</th>
-                <th>actions</th>
-            </tr>
+        <tr>
+            <th>Id</th>
+            <th>Label</th>
+            <th>actions</th>
+        </tr>
         </thead>
         <tbody>
-        {% for website_setting in website_settings %}
+        {% for home_page in home_pages %}
             <tr>
-                <td>{{ website_setting.id }}</td>
+                <td>{{ home_page.id }}</td>
+                <td>{{ home_page.label }}</td>
                 <td>
-                    <a href="{{ path('app_website_settings_show', {'id': website_setting.id}) }}">show</a>
-                    <a href="{{ path('app_website_settings_edit', {'id': website_setting.id}) }}">edit</a>
+                    <a href="{{ path('app_website_settings_edit', {'id': home_page.id}) }}">edit</a>
+                    <form method="post" action="{{ path('app_website_settings_delete', {'id': home_page.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ home_page.id) }}">
+                        <button type="submit">Delete</button>
+                    </form>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="2">no records found</td>
+                <td colspan="3">no records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_website_settings_new') }}">Create new</a>
 {% endblock %}
