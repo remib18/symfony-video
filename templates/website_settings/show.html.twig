@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}WebsiteSettings{% endblock %}
+
+{% block body %}
+    <h1>WebsiteSettings</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ website_setting.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_website_settings_index') }}">back to list</a>
+
+    <a href="{{ path('app_website_settings_edit', {'id': website_setting.id}) }}">edit</a>
+
+    {{ include('website_settings/_delete_form.html.twig') }}
+{% endblock %}

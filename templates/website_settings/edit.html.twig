@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit WebsiteSettings{% endblock %}
+
+{% block body %}
+    <h1>Edit WebsiteSettings</h1>
+
+    {{ include('website_settings/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_website_settings_index') }}">back to list</a>
+
+    {{ include('website_settings/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}WebsiteSettings index{% endblock %}
+
+{% block body %}
+    <h1>WebsiteSettings index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for website_setting in website_settings %}
+            <tr>
+                <td>{{ website_setting.id }}</td>
+                <td>
+                    <a href="{{ path('app_website_settings_show', {'id': website_setting.id}) }}">show</a>
+                    <a href="{{ path('app_website_settings_edit', {'id': website_setting.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_website_settings_new') }}">Create new</a>
+{% endblock %}
