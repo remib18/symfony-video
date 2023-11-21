@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use League\CommonMark\Exception\CommonMarkException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use League\CommonMark\CommonMarkConverter;
 
@@ -20,7 +21,7 @@ class HomeController extends AbstractController
         $websiteSettings = $entityManager->getRepository(WebsiteSettings::class)->find(1);
 
         if ($websiteSettings === null) {
-            throw $this->createNotFoundException('La configuration du site n\'a pas été trouvée.');
+            throw new NotFoundHttpException('La configuration du site n\'a pas été trouvée.');
         }
 
         $activeHomepages = $websiteSettings->getActiveHomepages();

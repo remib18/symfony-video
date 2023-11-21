@@ -25,3 +25,13 @@ Thumbs.db
 /.idea/dataSources.local.xml
 /.idea/dataSources.xml
 /.idea/workspace.xml
+
+.idea/dataSources/122ca3c2-06de-4e2c-9bc7-81ab706fe2dc/storage_v2/_src_/schema/information_schema.FNRwLQ.meta
+.idea/dataSources/122ca3c2-06de-4e2c-9bc7-81ab706fe2dc/storage_v2/_src_/schema/mysql.osA4Bg.meta
+.idea/dataSources/122ca3c2-06de-4e2c-9bc7-81ab706fe2dc/storage_v2/_src_/schema/performance_schema.kIw0nw.meta
+.idea/dataSources/122ca3c2-06de-4e2c-9bc7-81ab706fe2dc/storage_v2/_src_/schema/sys.zb4BAA.meta
+.idea/dataSources/23ae13fa-8b11-4290-8aad-44165223251c.xml
+.idea/dataSources/23ae13fa-8b11-4290-8aad-44165223251c/storage_v2/_src_/schema/information_schema.FNRwLQ.meta
+.idea/dataSources/23ae13fa-8b11-4290-8aad-44165223251c/storage_v2/_src_/schema/performance_schema.kIw0nw.meta
+
+
