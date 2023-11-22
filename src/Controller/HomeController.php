@@ -18,16 +18,15 @@ class HomeController extends AbstractController
     public function index(EntityManagerInterface $entityManager): Response
     {
         // Récupération du contenu Markdown dans la base de données
-        $websiteSettings = $entityManager->getRepository(WebsiteSettings::class)->find(1);
+        $websiteSettings = $entityManager->getRepository(WebsiteSettings::class)->findOneBy([]);
 
         if ($websiteSettings === null) {
             throw new NotFoundHttpException('La configuration du site n\'a pas été trouvée.');
         }
 
-        $activeHomepages = $websiteSettings->getActiveHomepages();
-        if (!$activeHomepages->isEmpty()) {
-            $firstHomepage = $activeHomepages->first();
-            $markdownContent = $firstHomepage->getMarkdown();
+        $activeHomepage = $websiteSettings->getActiveHomepage();
+        if ($activeHomepage !== null) {
+            $markdownContent = $activeHomepage->getMarkdown();
         } else {
             $markdownContent = 'Aucun contenu n\'est disponible pour le moment.';
         }
@@ -38,7 +37,6 @@ class HomeController extends AbstractController
             $htmlContent = $converter->convertToHtml($markdownContent);
         } catch (CommonMarkException) {
             $htmlContent = '<p>Une erreur s\'est produite lors de la conversion du contenu.</p>';
-
         }
 
         // On passe le contenu HTML à la vue

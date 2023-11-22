@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\WebsiteSettingsRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: WebsiteSettingsRepository::class)]
@@ -24,39 +22,22 @@ class WebsiteSettings
     #[ORM\Column(type: "integer")]
     public int $singleton_guard = 1;
 
-    #[ORM\ManyToMany(targetEntity: HomePages::class)]
-    private Collection $active_homepages;
-
-    public function __construct()
-    {
-        $this->active_homepages = new ArrayCollection();
-    }
+    #[ORM\OneToOne(targetEntity: HomePages::class)]
+    private $active_homepage;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return Collection<int, HomePages>
-     */
-    public function getActiveHomepages(): Collection
+    public function getActiveHomepage(): ?HomePages
     {
-        return $this->active_homepages;
+        return $this->active_homepage;
     }
 
-    public function addActiveHomepage(HomePages $activeHomepage): static
+    public function setActiveHomepage(?HomePages $activeHomepage): self
     {
-        if (!$this->active_homepages->contains($activeHomepage)) {
-            $this->active_homepages->add($activeHomepage);
-        }
-
-        return $this;
-    }
-
-    public function removeActiveHomepage(HomePages $activeHomepage): static
-    {
-        $this->active_homepages->removeElement($activeHomepage);
+        $this->active_homepage = $activeHomepage;
 
         return $this;
     }

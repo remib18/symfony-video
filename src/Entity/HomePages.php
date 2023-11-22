@@ -19,6 +19,9 @@ class HomePages
     #[ORM\Column(length: 255)]
     private ?string $markdown = null;
 
+    #[ORM\OneToOne(targetEntity: WebsiteSettings::class, mappedBy: "active_homepage")]
+    private $websiteSettings;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,27 @@ class HomePages
     public function setMarkdown(string $markdown): static
     {
         $this->markdown = $markdown;
+
+        return $this;
+    }
+
+    public function getWebsiteSettings(): ?WebsiteSettings
+    {
+        return $this->websiteSettings;
+    }
+
+    public function setWebsiteSettings(?WebsiteSettings $websiteSettings): self
+    {
+
+        if ($websiteSettings === null && $this->websiteSettings !== null) {
+            $this->websiteSettings->setActiveHomepage(null);
+        }
+
+        if ($websiteSettings !== null && $websiteSettings->getActiveHomepage() !== $this) {
+            $websiteSettings->setActiveHomepage($this);
+        }
+
+        $this->websiteSettings = $websiteSettings;
 
         return $this;
     }
