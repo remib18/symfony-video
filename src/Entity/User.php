@@ -147,6 +147,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    public function getRoleAsString(): string
+    {
+        // suppose que $this->roles contient un tableau des rôles de l'utilisateur
+        return implode(', ', $this->roles);
+    }
 
     public function getImageLink(): ?string
     {

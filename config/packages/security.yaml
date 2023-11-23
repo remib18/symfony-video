@@ -9,6 +9,7 @@ security:
             entity:
                 class: App\Entity\User
                 property: email
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
@@ -17,10 +18,12 @@ security:
             lazy: true
             provider: app_user_provider
             custom_authenticator: App\Security\AppAuthenticator
+            entry_point: App\Security\AuthenticationEntryPoint
+            access_denied_handler: App\Security\AccessDeniedHandler
             logout:
                 path: app_logout
                 # where to redirect after logout
-                # target: app_any_route
+                # target: app_login
 
             remember_me:
                 secret: '%kernel.secret%'
@@ -48,6 +51,7 @@ security:
         - { path: ^/panel/blog, roles: ROLE_WEBMASTER }
         - { path: ^/panel/users, roles: ROLE_ADMIN }
         - { path: ^/panel, roles: ROLE_WEBMASTER }
+        - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
     security:
