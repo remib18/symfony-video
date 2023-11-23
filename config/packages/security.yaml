@@ -20,6 +20,7 @@ security:
             custom_authenticator: App\Security\AppAuthenticator
             entry_point: App\Security\AuthenticationEntryPoint
             access_denied_handler: App\Security\AccessDeniedHandler
+            user_checker: App\Security\UserChecker
             logout:
                 path: app_logout
                 # where to redirect after logout
