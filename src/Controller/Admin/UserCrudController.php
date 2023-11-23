@@ -30,11 +30,16 @@ class UserCrudController extends AbstractCrudController
     }
     public function configureActions(Actions $actions): Actions
     {
-        return $actions
+        $actions = parent::configureActions($actions);
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $actions->disable(Action::NEW, Action::EDIT, Action::DELETE);
+        }
+        return $actions;
             // ...
-            ->setPermission(Action::NEW, 'ROLE_ADMIN')
-            ->setPermission(Action::EDIT, 'ROLE_ADMIN')
-            ->setPermission(Action::DELETE, 'ROLE_ADMIN');
+           // ->setPermission(Action::NEW, 'ROLE_ADMIN')
+           // ->setPermission(Action::EDIT, 'ROLE_ADMIN')
+           // ->setPermission(Action::DELETE, 'ROLE_ADMIN');
     }
 
 

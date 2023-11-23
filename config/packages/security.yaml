@@ -49,10 +49,8 @@ security:
     access_control:
         - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/app, roles: ROLE_USER }
-        - { path: ^/panel/blog, roles: ROLE_WEBMASTER }
-        - { path: ^/panel/users, roles: ROLE_ADMIN }
-        - { path: ^/panel, roles: ROLE_WEBMASTER }
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: [ROLE_ADMIN,ROLE_WEBMASTER] }
+
 
 when@test:
     security:
