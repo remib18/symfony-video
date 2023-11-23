@@ -95,20 +95,22 @@ class UserCrudController extends AbstractCrudController
         return $formBuilder->addEventListener(FormEvents::POST_SUBMIT, $this->hashPassword());
     }
 
-    private function hashPassword() {
-        return function($event) {
+    private function hashPassword(): \Closure
+    {
+        return function(FormEvent $event) {
+            /** @var User $user */
+            $user = $event->getData();
             $form = $event->getForm();
-            if (!$form->isValid()) {
-                return;
-            }
+
             $password = $form->get('password')->getData();
-            if ($password === null) {
+            if (!$password) {
                 return;
             }
 
-            $hash = $this->userPasswordHasher->hashPassword($this->getUser(), $password);
-            $form->getData()->setPassword($hash);
+            $hash = $this->userPasswordHasher->hashPassword($user, $password);
+            $user->setPassword($hash);
         };
     }
+
 
 }
