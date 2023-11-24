@@ -18,7 +18,7 @@ class DashboardController extends AbstractDashboardController
 
         if ($this->isGranted('ROLE_WEBMASTER')) {
             //TODO:redirect to webmasters page
-            return $this->render('app_homepage');
+            return $this->redirectToRoute('app_homepage');
         }
 
         if ($this->isGranted('ROLE_ADMIN')) {
@@ -26,7 +26,7 @@ class DashboardController extends AbstractDashboardController
             return $this->redirect($adminUrlGenerator->setController(UserCrudController::class)->generateUrl());
         }
 
-        return $this->render('app_homepage');
+        return $this->redirectToRoute('app_homepage');
 
     }
 
