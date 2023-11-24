@@ -36,10 +36,6 @@ class UserCrudController extends AbstractCrudController
             $actions->disable(Action::NEW, Action::EDIT, Action::DELETE);
         }
         return $actions;
-            // ...
-           // ->setPermission(Action::NEW, 'ROLE_ADMIN')
-           // ->setPermission(Action::EDIT, 'ROLE_ADMIN')
-           // ->setPermission(Action::DELETE, 'ROLE_ADMIN');
     }
 
 
