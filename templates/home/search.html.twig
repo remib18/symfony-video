@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats de la recherche{% endblock %}
+
+{% block body %}
+    <h1>Résultats de la recherche</h1>
+
+    <div>
+        <h2>{{ entry.imDBTitle }}</h2>
+        <img src="{{ entry.imDBImageUrl }}" alt="{{ entry.imDBTitle }}">
+        <p>Type: {{ entry.isSerie ? 'Series' : 'Movie' }}</p>
+        <p>IMDb ID: {{ entry.imDBId }}</p>
+        <p>Categories:
+            {% for category in entry.getCategoryId() %}
+                {{ category.getName() }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+    </div>
+{% endblock %}
