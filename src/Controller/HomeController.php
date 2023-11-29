@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\Episode;
 use App\Entity\ImDBEntry;
 use App\Entity\WebsiteSettings;
+use App\Service\OmdbApiService;
 use Doctrine\ORM\EntityManagerInterface;
 use League\CommonMark\Exception\CommonMarkException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +15,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use League\CommonMark\CommonMarkConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class HomeController extends AbstractController
 {
@@ -52,7 +57,7 @@ class HomeController extends AbstractController
     }
 
     #[Route('/search', name: 'search')]
-    public function search(Request $request, HttpClientInterface $httpClient, EntityManagerInterface $entityManager): Response
+    public function search(Request $request, OmdbApiService $omdbApiService, EntityManagerInterface $entityManager): Response
     {
         $query = $request->query->get('query');
 
@@ -61,15 +66,7 @@ class HomeController extends AbstractController
         $entry = $repository->findOneBy(['imDB_title' => $query]);
 
         if ($entry === null) {
-            // Si l'entrée n'est pas trouvée dans la base de données, on fait une requête à l'API
-            $response = $httpClient->request('GET', 'https://www.omdbapi.com/', [
-                'query' => [
-                    'apikey' => '293342ff',
-                    't' => $query,
-                ],
-            ]);
-
-            $data = $response->toArray();
+            $data = $omdbApiService->search($query);
 
             // Créez une nouvelle entrée avec les données de l'API
             $entry = new ImDBEntry();
@@ -101,23 +98,22 @@ class HomeController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     */
     #[Route('/series/{id}/episodes/{season}', name: 'series_episodes', defaults: ["season" => 1])]
-    public function episodes(string $id, int $season, HttpClientInterface $httpClient, EntityManagerInterface $entityManager): Response
+    public function episodes(string $id, int $season, OmdbApiService $omdbApiService, EntityManagerInterface $entityManager): Response
     {
         // Récupération des épisodes dans la base de données pour les afficher
         $episodes = $entityManager->getRepository(Episode::class)->findBy(['serie_imDB_id' => $id, 'season' => $season]);
 
         // Si aucun épisode n'est trouvé dans la base de données, faire une requête à l'API
         if (empty($episodes)) {
-            $response = $httpClient->request('GET', 'https://www.omdbapi.com/', [
-                'query' => [
-                    'apikey' => '293342ff',
-                    'i' => $id,
-                    'Season' => $season,
-                ],
-            ]);
-
-            $data = $response->toArray();
+            $data = $omdbApiService->getSeasonEpisodes($id, $season);
 
             // Parcours des épisodes et enregistrements dans la base de données
             foreach ($data['Episodes'] as $episodeData) {
@@ -138,14 +134,7 @@ class HomeController extends AbstractController
         }
 
         // Récupération du nombre total de saisons
-        $response = $httpClient->request('GET', 'https://www.omdbapi.com/', [
-            'query' => [
-                'apikey' => '293342ff',
-                'i' => $id,
-            ],
-        ]);
-
-        $data = $response->toArray();
+        $data = $omdbApiService->getSeriesDetails($id);
         $totalSeasons = $data['totalSeasons'];
 
         $entry = $entityManager->getRepository(ImDBEntry::class)->findOneBy(['imDB_id' => $id]);
