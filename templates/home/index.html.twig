@@ -1,21 +1,83 @@
-{% extends 'base.html.twig' %}
+{% extends '_layouts/base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Welcome!{% endblock %}
+
+{# Supprimer les faux posts quand les données seront liées via le backend #}
+{% set posts = [
+    {
+        id: 1,
+        slug: 'hello-world',
+        title: 'Hello World',
+        short: 'This is my first post!',
+        content: 'This is my first post, long version!',
+        author: 'John Doe',
+    }, {
+        id: 2,
+        slug: 'another-post',
+        title: 'Another Post',
+        short: 'This is my second post!',
+        content: 'This is my second post, long version!',
+        author: 'John Doe',
+    }, {
+        id: 3,
+        slug: 'yet-another-post',
+        title: 'Yet Another Post',
+        short: 'This is my third post!',
+        content: 'This is my third post, long version!',
+        author: 'Jane Doe',
+    }
+] %}
 
 {% block body %}
-    <div class="content">
-        {{ content|raw }}
-    </div>
+    <div class="container">
+        <div class="rendered">
+            {{ content|raw }}
+        </div>
 
-    <!-- Section pour le futur formaulaire de contact -->
-    <div id="contact-form">
-        <h2>Contact Us</h2>
+        <section id="blog" class="mt-10">
+            <h2 class="scroll-m-20 border-b pb-1 text-3xl font-semibold tracking-tight">Blog</h2>
 
-    </div>
+            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6">
+                {% for post in posts %}
+                    <div class="flex flex-col rounded-md border border-input bg-transparent px-4 py-2">
+                        <h3 class="text-xl font-semibold tracking-tight">{{ post.title }}</h3>
+                        <p class="text-xs text-muted-foreground mb-2">{{ post.author }}</p>
+                        <p class="text-sm text-muted-foreground">{{ post.short }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
 
-    <!-- Section pour le futur blog -->
-    <div id="blog">
-        <h2>Blog</h2>
+        <section id="contact" class="mt-10">
+            <h2 class="scroll-m-20 border-b pb-1 text-3xl font-semibold tracking-tight">Contact Us</h2>
 
+            {# Modifier le form (méthode post et action) pour que les données arrivent au bon endroit #}
+            {# Il est probable qu'il faille ajouter un champ caché pour le token CSRF #}
+            <form method="get" action="#" class="grid gap-6 mt-6">
+                <div class="grid gap-4">
+
+                    <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
+                        <div>
+                            <label for="name" class="text-sm font-medium leading-none">Name</label>
+                            <input id="name" name="name" type="text" placeholder="Your Name" class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" />
+                        </div>
+
+                        <div>
+                            <label for="email" class="text-sm font-medium leading-none">Email</label>
+                            <input id="email" name="email" type="email" placeholder="Your Email" class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="message" class="text-sm font-medium leading-none">Message</label>
+                        <textarea id="message" name="message" placeholder="Your Message" class="flex h-20 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"></textarea>
+                    </div>
+
+                    <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4 md:w-auto md:ml-auto">
+                        Send Message
+                    </button>
+                </div>
+            </form>
+        </section>
     </div>
 {% endblock %}
