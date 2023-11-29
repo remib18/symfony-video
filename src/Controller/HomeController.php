@@ -21,7 +21,7 @@ class HomeController extends AbstractController
         $websiteSettings = $entityManager->getRepository(WebsiteSettings::class)->findOneBy([]);
 
         if ($websiteSettings === null) {
-            throw new NotFoundHttpException('La configuration du site n\'a pas été trouvée.');
+            throw $this->createNotFoundException('La configuration du site n\'a pas été trouvée.');
         }
 
         $activeHomepage = $websiteSettings->getActiveHomepage();
