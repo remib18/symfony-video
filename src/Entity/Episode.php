@@ -25,6 +25,9 @@ class Episode
     #[ORM\Column(length: 255)]
     private ?string $episode_imDB_title = null;
 
+    #[ORM\Column]
+    private ?int $no_episode = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +77,18 @@ class Episode
     public function setEpisodeImDBTitle(string $episode_imDB_title): static
     {
         $this->episode_imDB_title = $episode_imDB_title;
+
+        return $this;
+    }
+
+    public function getNoEpisode(): ?int
+    {
+        return $this->no_episode;
+    }
+
+    public function setNoEpisode(int $no_episode): static
+    {
+        $this->no_episode = $no_episode;
 
         return $this;
     }

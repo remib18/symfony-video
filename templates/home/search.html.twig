@@ -16,4 +16,7 @@
             {% endfor %}
         </p>
     </div>
+    {% if entry.isSerie %}
+        <a href="{{ path('series_episodes', {'id': entry.imDBId}) }}">Afficher les épisodes</a>
+    {% endif %}
 {% endblock %}

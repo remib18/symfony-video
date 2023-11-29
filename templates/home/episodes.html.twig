@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Episodes{% endblock %}
+
+{% block body %}
+    <h1>Episodes</h1>
+
+    {% for episode in episodes %}
+        <div>
+            <h2>{{ episode.getEpisodeImDBTitle }}</h2>
+            <p>Episode number: {{ episode.getNoEpisode }}</p>
+            <p>Season number: {{ episode.getSeason }}</p>
+        </div>
+    {% endfor %}
+
+    {% if currentSeason < totalSeasons %}
+        <a href="{{ path('series_episodes', {'id': entry.getImDBId, 'season': currentSeason + 1}) }}">Afficher plus d'épisodes</a>
+        <p>Il reste {{ totalSeasons - currentSeason }} saison(s)</p>
+    {% endif %}
+{% endblock %}

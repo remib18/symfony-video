@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Category;
+use App\Entity\Episode;
 use App\Entity\ImDBEntry;
 use App\Entity\WebsiteSettings;
 use Doctrine\ORM\EntityManagerInterface;
@@ -96,6 +97,63 @@ class HomeController extends AbstractController
         }
 
         return $this->render('home/search.html.twig', [
+            'entry' => $entry,
+        ]);
+    }
+
+    #[Route('/series/{id}/episodes/{season}', name: 'series_episodes', defaults: ["season" => 1])]
+    public function episodes(string $id, int $season, HttpClientInterface $httpClient, EntityManagerInterface $entityManager): Response
+    {
+        // Récupération des épisodes dans la base de données pour les afficher
+        $episodes = $entityManager->getRepository(Episode::class)->findBy(['serie_imDB_id' => $id, 'season' => $season]);
+
+        // Si aucun épisode n'est trouvé dans la base de données, faire une requête à l'API
+        if (empty($episodes)) {
+            $response = $httpClient->request('GET', 'https://www.omdbapi.com/', [
+                'query' => [
+                    'apikey' => '293342ff',
+                    'i' => $id,
+                    'Season' => $season,
+                ],
+            ]);
+
+            $data = $response->toArray();
+
+            // Parcours des épisodes et enregistrements dans la base de données
+            foreach ($data['Episodes'] as $episodeData) {
+                $episode = new Episode();
+                $episode->setSerieImDBId($id);
+                $episode->setEpisodeImDBId($episodeData['imdbID']);
+                $episode->setSeason($season);
+                $episode->setEpisodeImDBTitle($episodeData['Title']);
+                $episode->setNoEpisode((int) $episodeData['Episode']);
+
+                $entityManager->persist($episode);
+            }
+
+            $entityManager->flush();
+
+            // Récupération des épisodes dans la base de données pour les afficher
+            $episodes = $entityManager->getRepository(Episode::class)->findBy(['serie_imDB_id' => $id, 'season' => $season]);
+        }
+
+        // Récupération du nombre total de saisons
+        $response = $httpClient->request('GET', 'https://www.omdbapi.com/', [
+            'query' => [
+                'apikey' => '293342ff',
+                'i' => $id,
+            ],
+        ]);
+
+        $data = $response->toArray();
+        $totalSeasons = $data['totalSeasons'];
+
+        $entry = $entityManager->getRepository(ImDBEntry::class)->findOneBy(['imDB_id' => $id]);
+
+        return $this->render('home/episodes.html.twig', [
+            'episodes' => $episodes,
+            'totalSeasons' => $totalSeasons,
+            'currentSeason' => $season,
             'entry' => $entry,
         ]);
     }
