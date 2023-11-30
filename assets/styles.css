@@ -177,3 +177,7 @@
     height: -moz-available;
     height: -webkit-fill-available;
 }
+
+.custom-form ul li {
+    @apply px-1 text-xs text-red-600;
+}
