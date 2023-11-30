@@ -2,7 +2,9 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\HomePages;
 use App\Entity\User;
+use App\Entity\WebsiteSettings;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -32,26 +34,22 @@ class DashboardController extends AbstractDashboardController
             return parent::index();
         }
 
-
-
         return $this->redirectToRoute('app_app');
-
     }
 
-        public
-        function configureDashboard(): Dashboard
+        public function configureDashboard(): Dashboard
         {
             return Dashboard::new()
                 ->setTitle('Symfony Video');
         }
 
-        public
-        function configureMenuItems(): iterable
+        public function configureMenuItems(): iterable
         {
             yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
             if ($this->isGranted('ROLE_ADMIN')) {
                 yield MenuItem::linkToCrud('Users', 'fa fa-user', User::class);
+                yield MenuItem::linkToCrud('HomePages', 'fa fa-file', HomePages::class);
+                yield MenuItem::linkToCrud('WebsiteSettings', 'fa fa-cogs', WebsiteSettings::class);
             }
-
         }
     }
