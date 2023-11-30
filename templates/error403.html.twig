@@ -6,5 +6,5 @@
 {% block body %}
     <h1 style="color: red;">Accès Interdit</h1>
     <p>Vous n'avez pas les permissions nécessaires pour accéder à cette page.</p>
-    <a href="{{ path('app_logout') }}" class="btn btn-primary">Déconnexion</a>
+    <button onclick="history.back()" class="btn btn-primary">Retour</button>
 {% endblock %}

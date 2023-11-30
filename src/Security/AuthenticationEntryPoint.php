@@ -21,8 +21,6 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
      */
     public function start(Request $request, AuthenticationException $authException = null): RedirectResponse|Response
     {
-        $request->getSession()->getFlashBag()->add('note', 'You have to login in order to access this page.');
-
         return new RedirectResponse($this->urlGenerator->generate('app_login'));
     }
 }

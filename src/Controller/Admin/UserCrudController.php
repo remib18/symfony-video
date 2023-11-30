@@ -12,17 +12,27 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use Symfony\Component\Form\Extension\Core\Type\{PasswordType, RepeatedType};
 use Symfony\Component\Form\{FormBuilderInterface, FormEvent, FormEvents};
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 class UserCrudController extends AbstractCrudController
 {
+    public function index(AdminContext $context)
+    {
+        if ($this->isGranted('ROLE_WEBMASTER') && !$this->isGranted('ROLE_ADMIN')) {
+            throw $this->createAccessDeniedException();
+        }
+
+
+    return parent::index($context);
+}
     public function __construct(
-        public UserPasswordHasherInterface $userPasswordHasher
+
+        public UserPasswordHasherInterface $userPasswordHashed
     ) {}
     public static function getEntityFqcn(): string
     {
@@ -33,7 +43,7 @@ class UserCrudController extends AbstractCrudController
         $actions = parent::configureActions($actions);
 
         if (!$this->isGranted('ROLE_ADMIN')) {
-            $actions->disable(Action::NEW, Action::EDIT, Action::DELETE);
+            $actions->disable(Action::NEW, Action::EDIT, Action::DELETE, Action::INDEX);
         }
         return $actions;
     }
@@ -56,7 +66,10 @@ class UserCrudController extends AbstractCrudController
                     ])
                     ->renderAsBadges()
                     ->formatValue(function ($value, $entity) {
+                        if ($entity instanceof User){
                         return $entity->getRoleAsString();
+                        }
+                        return null;
                     }),
                 TextField::new('password')
                     ->setFormType(RepeatedType::class)
@@ -108,10 +121,12 @@ class UserCrudController extends AbstractCrudController
                 return;
             }
 
-            $hash = $this->userPasswordHasher->hashPassword($user, $password);
+            $hash = $this->userPasswordHashed->hashPassword($user, $password);
             $user->setPassword($hash);
         };
     }
+
+
 
 
 }
