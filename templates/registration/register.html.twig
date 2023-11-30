@@ -24,7 +24,7 @@
                 </div>
                 {{ form_start(registrationForm) }}
                     <div class="grid gap-2">
-                        <div class="grid gap-1">
+                        <div class="grid gap-1 custom-form">
                             {{ form_row(registrationForm.firstName, {
                                 label_attr: {
                                     class: 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
@@ -35,7 +35,7 @@
                                 }
                             }) }}
                         </div>
-                        <div class="grid gap-1">
+                        <div class="grid gap-1 custom-form">
                             {{ form_row(registrationForm.lastName, {
                                 label_attr: {
                                     class: 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
@@ -46,7 +46,7 @@
                                 }
                             }) }}
                         </div>
-                        <div class="grid gap-1">
+                        <div class="grid gap-1 custom-form">
                             {{ form_row(registrationForm.email, {
                                 label_attr: {
                                     class: 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
@@ -57,7 +57,7 @@
                                 }
                             }) }}
                         </div>
-                        <div class="grid gap-1">
+                        <div class="grid gap-1 custom-form">
                             {{ form_row(registrationForm.plainPassword, {
                                 label: 'Password',
                                 label_attr: {
@@ -69,7 +69,7 @@
                                 }
                             }) }}
                         </div>
-                        <div class="grid gap-1">
+                        <div class="grid gap-1 custom-form">
                             {{ form_row(registrationForm.agreeTerms, {
                                 label: 'I agree to the terms and conditions',
                                 label_attr: {
