@@ -26,7 +26,7 @@ class DashboardController extends AbstractDashboardController
             return $this->redirect($adminUrlGenerator->setController(UserCrudController::class)->generateUrl());
         }
 
-        return $this->redirectToRoute('app_homepage');
+        return $this->redirectToRoute('app_app');
 
     }
 
