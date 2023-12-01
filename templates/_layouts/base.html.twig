@@ -1,0 +1,134 @@
+{% extends '_layouts/html.html.twig' %}
+
+{% set config_name = config_name|default('Default site name') %}
+
+{% block javascripts %}
+    <script defer>
+        function updateLinks() {
+            const normalizedFragment = window.location.hash;
+
+            // Check if the fragment matches any navigation link and update the active link
+            if (normalizedFragment) {
+                const activeLink = document.querySelector('a[data-link="' + normalizedFragment + '"]');
+
+                // Set active link
+                if (activeLink) {
+                    activeLink.classList.add('text-foreground');
+                    activeLink.classList.remove('text-foreground/60');
+                }
+
+                // Remove active class from other links
+                const links = document.querySelectorAll('#nav a[data-link]');
+                links.forEach(link => {
+                    if (link.getAttribute('data-link') !== activeLink.getAttribute('data-link')) {
+                        link.classList.remove('text-foreground');
+                        link.classList.add('text-foreground/60');
+                    }
+                });
+
+                const linkHome = document.querySelector('#nav a[data-link-home]');
+                linkHome.classList.remove('text-foreground');
+                linkHome.classList.add('text-foreground/60');
+            } else {
+                const linkHome = document.querySelector('#nav a[data-link-home]');
+                linkHome.classList.add('text-foreground');
+                linkHome.classList.remove('text-foreground/60');
+            }
+        }
+
+        const currentPath = window.location.pathname;
+        if (currentPath === '/') {
+            document.addEventListener("DOMContentLoaded", updateLinks);
+            window.addEventListener("hashchange", updateLinks);
+        }
+    </script>
+{% endblock %}
+
+{% block sublayout %}
+    <div class="flex min-h-screen flex-col">
+        <header
+                class="z-40 bg-background border-b bg-opacity-25 backdrop-blur-3xl sticky top-0 mb-4"
+                style="background-color: hsla(var(--background) / var(--tw-bg-opacity))"> <!-- fix for opacity -->
+            <div class="container flex h-16 items-center justify-between">
+                <div class="flex gap-6 md:gap-10">
+                    <a href="/" class="flex items-center gap-1.5">
+                        {% include '_components/logo.html.twig' %}
+                        <span class="hidden font-bold sm:inline-block">
+                            {{ config_name }}
+                        </span>
+                    </a>
+                    <nav id="nav" class="hidden gap-6 md:flex">
+                        <a data-link-home href="/" class="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm  {{ app.request.attributes.get('_route') == 'app_homepage' ? 'text-foreground' : 'text-foreground/60' }}">
+                            Accueil
+                        </a>
+                        <a data-link="#blog" href="/#blog" class="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm text-foreground/60">
+                            Blog
+                        </a>
+                        <a data-link="#contact" href="/#contact" class="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm text-foreground/60">
+                            Contact
+                        </a>
+                        {% if is_granted('ROLE_USER') %}
+                            <a href="{{ path('app_app') }}" class="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm {{ app.request.attributes.get('_route') == 'app_app' ? 'text-foreground' : 'text-foreground/60' }}">
+                                App
+                            </a>
+                        {% endif %}
+                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_WEBMASTER') %}
+                            <!-- TODO: add another accolade to reactivate once the admin is setup -->
+                            <a href="{ path('admin') }" class="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm {{ app.request.attributes.get('_route') == 'app_admin' ? 'text-foreground' : 'text-foreground/60' }}">
+                                Admin
+                            </a>
+                        {% endif %}
+                    </nav>
+                </div>
+                <nav>
+                    {% if is_granted('ROLE_USER') %}
+                        <a href="{{ path('app_logout') }}" class="inline-flex items-center bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 rounded-md px-4">
+                            Logout
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="inline-flex items-center bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 rounded-md px-4">
+                            Login
+                        </a>
+                    {% endif %}
+                </nav>
+            </div>
+        </header>
+        <main class="flex-1 flex h-fill">{% block body %}{% endblock %}</main>
+        <footer class="flex flex-col items-center justify-between gap-4 py-6 md:h-16 md:flex-row md:py-0 border-t mt-4 w-full">
+            <div class="container flex flex-col items-center gap-4 px-16 md:flex-row md:gap-2">
+                {% include '_components/logo.html.twig' %}
+                <p class="text-center text-sm leading-loose md:text-left">
+                    College project by <a
+                            href="https://github.com/remib18"
+                            target="_blank"
+                            rel="noreferrer"
+                            class="font-medium underline underline-offset-4"
+                    >R&eacute;mi</a>, <a
+                            href="https://github.com/Roosewald"
+                            target="_blank"
+                            rel="noreferrer"
+                            class="font-medium underline underline-offset-4"
+                    >Pierre-Alexis</a>, <a
+                            href="https://github.com/Hadarimy"
+                            target="_blank"
+                            rel="noreferrer"
+                            class="font-medium underline underline-offset-4"
+                    >Moussa</a>, <a
+                            href="https://github.com/Ouss-els"
+                            target="_blank"
+                            rel="noreferrer"
+                            class="font-medium underline underline-offset-4"
+                    >Oussama</a>. The source code is available on <a
+                            href="https://github.com/remib18/symfony-video"
+                            target="_blank"
+                            rel="noreferrer"
+                            class="font-medium underline underline-offset-4"
+                    >
+                        GitHub
+                    </a>
+                    .
+                </p>
+            </div>
+        </footer>
+    </div>
+{% endblock %}
