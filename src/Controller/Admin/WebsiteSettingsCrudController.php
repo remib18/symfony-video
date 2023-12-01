@@ -46,11 +46,16 @@ class WebsiteSettingsCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        return $actions
+         $actions
             ->disable(Action::NEW, Action::DELETE, Action::SAVE_AND_RETURN)
             ->update(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE, function (Action $action) {
                 return $action->setIcon('fa fa-save')->setLabel('Save');
             });
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $actions->disable(Action::NEW, Action::EDIT, Action::DELETE, Action::INDEX);
+        }
+         return $actions;
     }
 
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
