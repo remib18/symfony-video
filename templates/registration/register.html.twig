@@ -1,21 +1,101 @@
-{% extends 'base.html.twig' %}
+{% extends '_layouts/auth.html.twig' %}
 
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
-
-    {{ form_errors(registrationForm) }}
-
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.firstName) }}
-        {{ form_row(registrationForm.lastName) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+    <div class="container grid h-screen w-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
+        <a href="/login" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background hover:bg-accent hover:text-accent-foreground h-10 py-2 px-4 absolute right-4 top-4 md:right-8 md:top-8">
+            Login
+        </a>
+        {{ form_errors(registrationForm) }}
+        <div class="hidden h-full bg-muted lg:flex lg:items-center lg:justify-center">
+            {% include '_components/register_illustration.html.twig' with {'classes': "h-auto w-[60%]"} %}
+        </div>
+        <div class="lg:p-8">
+            <div class="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+                <div class="flex flex-col space-y-2 text-center">
+                    {% include '_components/logo.html.twig' with {'classes': "mx-auto h-6 w-6"} %}
+                    <h1 class="text-2xl font-semibold tracking-tight">
+                        Create an account
+                    </h1>
+                    <p class="text-sm text-muted-foreground">
+                        Enter your credentials below to create your account
+                    </p>
+                </div>
+                {{ form_start(registrationForm) }}
+                    <div class="grid gap-2">
+                        <div class="grid gap-1 custom-form">
+                            {{ form_row(registrationForm.firstName, {
+                                label_attr: {
+                                    class: 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+                                },
+                                attr: {
+                                    placeholder: 'John',
+                                    class: 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                                }
+                            }) }}
+                        </div>
+                        <div class="grid gap-1 custom-form">
+                            {{ form_row(registrationForm.lastName, {
+                                label_attr: {
+                                    class: 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+                                },
+                                attr: {
+                                    placeholder: 'Doe',
+                                    class: 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                                }
+                            }) }}
+                        </div>
+                        <div class="grid gap-1 custom-form">
+                            {{ form_row(registrationForm.email, {
+                                label_attr: {
+                                    class: 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+                                },
+                                attr: {
+                                    placeholder: 'name@example.com',
+                                    class: 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                                }
+                            }) }}
+                        </div>
+                        <div class="grid gap-1 custom-form">
+                            {{ form_row(registrationForm.plainPassword, {
+                                label: 'Password',
+                                label_attr: {
+                                    class: 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+                                },
+                                attr: {
+                                    placeholder: '********',
+                                    class: 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                                }
+                            }) }}
+                        </div>
+                        <div class="grid gap-1 custom-form">
+                            {{ form_row(registrationForm.agreeTerms, {
+                                label: 'I agree to the terms and conditions',
+                                label_attr: {
+                                    class: 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+                                },
+                                attr: {
+                                    class: 'peer h-4 w-4 shrink-0 rounded-sm border border-input ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-primary'
+                                }
+                            }) }}
+                        <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4">
+                            Create your account
+                        </button>
+                    </div>
+                {{ form_end(registrationForm) }}
+                <p class="px-8 text-center text-sm text-muted-foreground">
+                    By proceeding, you agree to our <a
+                        href="#"
+                        class="hover:text-brand underline underline-offset-4">
+                        Terms of Service
+                    </a> and <a
+                        href="#"
+                        class="hover:text-brand underline underline-offset-4">
+                        Privacy Policy
+                    </a>.
+                </p>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -16,7 +16,7 @@ class HomePages
     #[ORM\Column(length: 255)]
     private ?string $label = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'text')]
     private ?string $markdown = null;
 
     #[ORM\OneToOne(targetEntity: WebsiteSettings::class, mappedBy: "active_homepage")]

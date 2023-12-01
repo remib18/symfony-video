@@ -8,10 +8,13 @@ use App\Entity\ImDBEntry;
 use App\Entity\WebsiteSettings;
 use App\Service\OmdbApiService;
 use Doctrine\ORM\EntityManagerInterface;
+use League\CommonMark\Environment\Environment;
 use League\CommonMark\Exception\CommonMarkException;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
+use League\CommonMark\MarkdownConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use League\CommonMark\CommonMarkConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +34,7 @@ class HomeController extends AbstractController
         $websiteSettings = $entityManager->getRepository(WebsiteSettings::class)->findOneBy([]);
 
         if ($websiteSettings === null) {
-            throw new NotFoundHttpException('La configuration du site n\'a pas été trouvée.');
+            throw $this->createNotFoundException('La configuration du site n\'a pas été trouvée.');
         }
 
         $activeHomepage = $websiteSettings->getActiveHomepage();
@@ -41,10 +44,15 @@ class HomeController extends AbstractController
             $markdownContent = 'Aucun contenu n\'est disponible pour le moment.';
         }
 
+        // Configuration du convertisseur Markdown
+        $environment = new Environment();
+        $environment->addExtension(new CommonMarkCoreExtension());
+        $environment->addExtension(new GithubFlavoredMarkdownExtension());
+
         // Convertion du contenu Markdown en HTML
-        $converter = new CommonMarkConverter();
+        $converter = new MarkdownConverter($environment);
         try {
-            $htmlContent = $converter->convertToHtml($markdownContent);
+            $htmlContent = $converter->convert($markdownContent);
         } catch (CommonMarkException) {
             $htmlContent = '<p>Une erreur s\'est produite lors de la conversion du contenu.</p>';
         }

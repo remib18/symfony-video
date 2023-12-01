@@ -1,0 +1,10 @@
+{# templates/error403.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Accès Refusé !{% endblock %}
+
+{% block body %}
+    <h1 style="color: red;">Accès Interdit</h1>
+    <p>Vous n'avez pas les permissions nécessaires pour accéder à cette page.</p>
+    <button onclick="history.back()" class="btn btn-primary">Retour</button>
+{% endblock %}

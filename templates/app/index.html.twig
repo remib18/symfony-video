@@ -1,22 +1,123 @@
-{% extends 'base.html.twig' %}
+{% extends '_layouts/base.html.twig' %}
 
 {% block title %}Hello AppController!{% endblock %}
 
+{% set movies = app.request.get('movies') %}
+{% set tvShows = app.request.get('tv-shows') %}
+{% set anime = app.request.get('anime') %}
+
+{# Todo: Remove this when the real genres are implemented #}
+{% set genres = [
+    'Action',
+    'Adventure',
+    'Animation',
+    'Biography',
+    'Comedy',
+    'Crime',
+    'Documentary',
+    'Drama',
+    'Family',
+    'Fantasy',
+    'Film-Noir',
+    'History',
+    'Horror',
+    'Music',
+    'Musical',
+    'Mystery',
+    'Romance',
+    'Sci-Fi',
+    'Sport',
+    'Thriller',
+    'War',
+    'Western',
+] %}
+
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="container grid flex-1 gap-12 md:grid-cols-[200px_1fr] flex-grow">
+        <aside class="hidden w-[200px] flex-col md:flex pt-[.75rem] flex-grow">
+            <form method="get" class="flex flex-col items-stretch gap-2 flex-grow">
+                <label for="search" class="font-heading font-medium text-lg md:text-xl border-b pl-3">Search</label>
+                <div class="flex items-center gap-2 w-full rounded-md border border-input h-10 px-3 py-2 ring-offset-background focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                    {% include '_components/search_icon.html.twig' with {'classes': 'h-4 w-4 text-foreground'} %}
+                    <input
+                            type="text"
+                            name="q"
+                            value="{{ app.request.get('q') }}"
+                            placeholder="Search..."
+                            id="search"
+                            autocomplete="search"
+                            class="placeholder:text-muted-foreground focus-visible:outline-none text-sm w-full bg-transparent"
+                    >
+                </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+                <h2 class="font-heading font-medium text-lg md:text-xl border-b pl-3 mt-4">Filters</h2>
+                <div>
+                    <input type="checkbox" name="movies" {{ movies == "on" or movies == null and not (tvShows or anime) ? 'checked' : '' }} id="movies" class="hidden peer">
+                    <label for="movies" class="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent cursor-pointer peer-checked:bg-border">
+                        <span>Movies</span>
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="tv-shows" {{ tvShows == "on" or tvShows == null and not (movies or anime) ? 'checked' : '' }} id="tv-show" class="hidden peer">
+                    <label for="tv-show" class="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent cursor-pointer peer-checked:bg-border">
+                        <span>Tv Shows</span>
+                    </label>
+                </div>
+                <div>
+                    <input type="checkbox" name="anime" {{ anime == "on" or anime == null and not (movies or tvShows) ? 'checked' : '' }} id="anime" class="hidden peer">
+                    <label for="anime" class="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent cursor-pointer peer-checked:bg-border">
+                        <span>Anime</span>
+                    </label>
+                </div>
 
-    <code>Note that to see this page, you need to be logged.</code>
+                <h2 class="font-heading font-medium text-lg md:text-xl border-b pl-3 mt-4">Sort</h2>
+                <div>
+                    <input type="radio" value="title" {{ app.request.get('sort') == "title" or app.request.get('sort') == null ? 'checked' : '' }} id="sort-title" name="sort" class="hidden peer">
+                    <label for="sort-title" class="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent cursor-pointer peer-checked:bg-border">
+                        <span>Title</span>
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" value="year" {{ app.request.get('sort') == "year" ? 'checked' : '' }} id="sort-year" name="sort" class="hidden peer">
+                    <label for="sort-year" class="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent cursor-pointer peer-checked:bg-border">
+                        <span>Year</span>
+                    </label>
+                </div>
+                <div>
+                    <input type="radio" value="rating" {{ app.request.get('sort') == "rating" ? 'checked' : '' }} id="sort-rating" name="sort" class="hidden peer">
+                    <label for="sort-rating" class="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent cursor-pointer peer-checked:bg-border">
+                        <span>Rating</span>
+                    </label>
+                </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/opt/homebrew/var/www/src/Controller/AppController.php'|file_link(0) }}">src/Controller/AppController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/opt/homebrew/var/www/templates/app/index.html.twig'|file_link(0) }}">templates/app/index.html.twig</a></code></li>
-    </ul>
-</div>
+                <label for="genres" class="font-heading font-medium text-lg md:text-xl border-b pl-3 mt-4">Genres</label>
+                <div class="flex flex-wrap gap-2">
+                    {% for genre in genres %}
+                        <div>
+                            <input
+                                type="checkbox"
+                                name="genres[]"
+                                {{ genre in app.request.get('genres') ? 'checked' : '' }}
+                                value="{{ genre }}"
+                                id="genre-{{ genre }}"
+                                class="hidden peer">
+                            <label for="genre-{{ genre }}" class="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent cursor-pointer peer-checked:bg-border">
+                                <span>{{ genre }}</span>
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="flex-grow min-h-8"></div>
+                <button
+                    class="inline-flex items-center justify-center mb-4 bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 rounded-md px-4"
+                    type="submit">
+                    Apply
+                </button>
+            </form>
+        </aside>
+        <main>
+            <h1 class="font-heading text-3xl md:text-4xl border-b">Medias</h1>
+        </main>
+    </div>
 {% endblock %}
