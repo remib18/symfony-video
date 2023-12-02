@@ -30,7 +30,7 @@ class OmdbApiService
         $response = $this->httpClient->request('GET', 'https://www.omdbapi.com/', [
             'query' => [
                 'apikey' => '293342ff',
-                't' => $query,
+                's' => $query,
             ],
         ]);
 
