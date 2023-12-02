@@ -74,5 +74,4 @@ class HttpRequest
 
         return substr($uri, 0, -1);
     }
-
 }
