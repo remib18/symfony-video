@@ -42,3 +42,5 @@ Before starting, make sure you have the following installed on your computer:
 10. Install NodeJS dependencies with `npm i`
 11. Build the assets with `npm run build`
 12. Start the local server with `symfony serve`
+13. Go to `localhost:8000` in your browser
+14. Follow the instructions to create an admin account
