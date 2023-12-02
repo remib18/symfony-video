@@ -13,12 +13,10 @@ class ContactType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('firstname')
-            ->add('lastname')
+            ->add('name')
             ->add('email')
-            ->add('subject')
             ->add('message')
-            ->add('envoyer',SubmitType::class)
+
         ;
     }
 

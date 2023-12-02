@@ -1,5 +1,8 @@
 {% extends '_layouts/base.html.twig' %}
 
+
+
+
 {% block title %}Welcome!{% endblock %}
 
 {# Supprimer les faux posts quand les données seront liées via le backend #}
@@ -48,36 +51,61 @@
             </div>
         </section>
 
+
+
         <section id="contact" class="mt-10">
             <h2 class="scroll-m-20 border-b pb-1 text-3xl font-semibold tracking-tight">Contact Us</h2>
 
-            {# Modifier le form (méthode post et action) pour que les données arrivent au bon endroit #}
-            {# Il est probable qu'il faille ajouter un champ caché pour le token CSRF #}
-            <form method="get" action="#" class="grid gap-6 mt-6">
-                <div class="grid gap-4">
 
-                    <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
-                        <div>
-                            <label for="name" class="text-sm font-medium leading-none">Name</label>
-                            <input id="name" name="name" type="text" placeholder="Your Name" class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" />
-                        </div>
+            {{ form_start(form) }}
 
-                        <div>
-                            <label for="email" class="text-sm font-medium leading-none">Email</label>
-                            <input id="email" name="email" type="email" placeholder="Your Email" class="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2" />
-                        </div>
-                    </div>
-
+            <div class="grid gap-4">
+                <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <div>
-                        <label for="message" class="text-sm font-medium leading-none">Message</label>
-                        <textarea id="message" name="message" placeholder="Your Message" class="flex h-20 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"></textarea>
+                        <label for="name" class="text-sm font-medium leading-none"></label>
+                        {{ form_row(form.name, {
+                            'attr': {
+                                'placeholder': 'Your Name',
+                                'class': 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+                            }
+                        }) }}
                     </div>
-
-                    <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4 md:w-auto md:ml-auto">
-                        Send Message
-                    </button>
+                    <div>
+                        <label for="email" class="text-sm font-medium leading-none"></label>
+                        {{ form_row(form.email, {
+                            'attr': {
+                                'placeholder': 'Your Email',
+                                'class': 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+                            }
+                        }) }}
+                    </div>
                 </div>
-            </form>
+                <div>
+                    <label for="message" class="text-sm font-medium leading-none"></label>
+                    {{ form_row(form.message, {
+                        'attr': {
+                            'placeholder': 'Your Message',
+                            'class': 'flex h-20 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+                        }
+                    }) }}
+                </div>
+                <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4 md:w-auto md:ml-auto">
+                    Send Message
+                </button>
+
+
+
+                </div>
+
+            {{ form_end(form) }}
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+
         </section>
     </div>
 {% endblock %}

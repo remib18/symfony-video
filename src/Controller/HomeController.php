@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Contact;
 use App\Entity\WebsiteSettings;
 use App\Form\ContactType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,15 +52,23 @@ class HomeController extends AbstractController
 
 
         }
-        $form= $this->createForm(ContactType::class);
+
+        $contact= new Contact();
+        $form= $this->createForm(ContactType::class,$contact);
 
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
 
-            $data = $form->getData();
-            dd($data);
+           $entityManager->persist($contact);
+            $entityManager->flush();
+
+            $this->addFlash('success','Message envoyé!');
+
+           // return $this ->redirectToRoute('home/index');
+
         }
+
         // On passe le contenu HTML à la vue
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
