@@ -62,40 +62,43 @@
             <div class="grid gap-4">
                 <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <div>
-                        <label for="name" class="text-sm font-medium leading-none"></label>
                         {{ form_row(form.name, {
                             'attr': {
                                 'placeholder': 'Your Name',
-                                'class': 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
-                            }
+                                'class': 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                            },
+                            'label_attr': {
+                                'class': 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+                            },
                         }) }}
                     </div>
                     <div>
-                        <label for="email" class="text-sm font-medium leading-none"></label>
                         {{ form_row(form.email, {
                             'attr': {
                                 'placeholder': 'Your Email',
-                                'class': 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
-                            }
+                                'class': 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                            },
+                            'label_attr': {
+                                'class': 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+                            },
                         }) }}
                     </div>
                 </div>
                 <div>
-                    <label for="message" class="text-sm font-medium leading-none"></label>
                     {{ form_row(form.message, {
                         'attr': {
                             'placeholder': 'Your Message',
-                            'class': 'flex h-20 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
-                        }
+                            'class': 'flex h-20 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                        },
+                        'label_attr': {
+                            'class': 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
+                        },
                     }) }}
                 </div>
                 <button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4 md:w-auto md:ml-auto">
                     Send Message
                 </button>
-
-
-
-                </div>
+            </div>
 
             {{ form_end(form) }}
 
