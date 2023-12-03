@@ -35,7 +35,7 @@
 {% block body %}
     <div class="container grid flex-1 gap-12 md:grid-cols-[200px_1fr] flex-grow">
         <aside class="hidden w-[200px] flex-col md:flex pt-[.75rem] flex-grow">
-            <form action = "{{ path('search') }}" method="get" class="flex flex-col items-stretch gap-2 flex-grow">
+            <form action = "{{ path('app_search') }}" method="get" class="flex flex-col items-stretch gap-2 flex-grow">
                 <label for="search" class="font-heading font-medium text-lg md:text-xl border-b pl-3">Search</label>
                 <div class="flex items-center gap-2 w-full rounded-md border border-input h-10 px-3 py-2 ring-offset-background focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
                     {% include '_components/search_icon.html.twig' with {'classes': 'h-4 w-4 text-foreground'} %}
@@ -131,7 +131,7 @@
                             {% endfor %}
                         </p>
                         {% if entry.isIsSerie %}
-                            <a href="{{ path('series_episodes', {'id': entry.getImDBId}) }}">Afficher les épisodes</a>
+                            <a href="{{ path('app_series_episodes', {'id': entry.getImDBId}) }}">Afficher les épisodes</a>
                         {% endif %}
                     </div>
                 {% endfor %}

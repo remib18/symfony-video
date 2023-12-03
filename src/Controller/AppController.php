@@ -55,9 +55,12 @@ class AppController extends AbstractController
                     $entry->setImDBImageUrl($item['Poster']);
                     $entry->setIsSerie($item['Type'] === 'series');
 
+                    // Récupération des détails du film ou de la série
+                    $details = $omdbApiService->getSeriesDetails($item['imdbID']);
+
                     // Ajout des catégories, si elles n'existent pas déjà
-                    if (isset($item['Genre'])) {
-                        $genres = explode(', ', $item['Genre']);
+                    if (isset($details['Genre'])) {
+                        $genres = explode(', ', $details['Genre']);
                         foreach ($genres as $genreName) {
                             $category = $entityManager->getRepository(Category::class)->findOneBy(['name' => $genreName]);
                             if ($category === null) {
@@ -93,16 +96,18 @@ class AppController extends AbstractController
         if (empty($episodes)) {
             $data = $omdbApiService->getSeasonEpisodes($id, $season);
 
-            // Parcours des épisodes et enregistrements dans la base de données
-            foreach ($data['Episodes'] as $episodeData) {
-                $episode = new Episode();
-                $episode->setSerieImDBId($id);
-                $episode->setEpisodeImDBId($episodeData['imdbID']);
-                $episode->setSeason($season);
-                $episode->setEpisodeImDBTitle($episodeData['Title']);
-                $episode->setNoEpisode((int) $episodeData['Episode']);
+            if (isset($data['Episodes'])) {
+                // Parcours des épisodes et enregistrements dans la base de données
+                foreach ($data['Episodes'] as $episodeData) {
+                    $episode = new Episode();
+                    $episode->setSerieImDBId($id);
+                    $episode->setEpisodeImDBId($episodeData['imdbID']);
+                    $episode->setSeason($season);
+                    $episode->setEpisodeImDBTitle($episodeData['Title']);
+                    $episode->setNoEpisode((int)$episodeData['Episode']);
 
-                $entityManager->persist($episode);
+                    $entityManager->persist($episode);
+                }
             }
 
             $entityManager->flush();
