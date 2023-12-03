@@ -21,6 +21,11 @@ class WebsiteSettingsRepository extends ServiceEntityRepository
         parent::__construct($registry, WebsiteSettings::class);
     }
 
+    public function findDefault(): ?WebsiteSettings
+    {
+        return $this->findOneBy(['id' => 1]);
+    }
+
 //    /**
 //     * @return WebsiteSettings[] Returns an array of WebsiteSettings objects
 //     */
