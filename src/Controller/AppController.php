@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Controller;
-
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\Category;
 use App\Entity\Episode;
 use App\Entity\ImDBEntry;
+use App\Repository\CategoryRepository;
 use App\Service\OmdbApiService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,10 +21,13 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 class AppController extends AbstractController
 {
     #[Route('/app', name: 'app_app')]
-    public function app(): Response
+    public function app(CategoryRepository $categoryRepository): Response
     {
+        $genres = $categoryRepository->findAll();
+
         return $this->render('app/index.html.twig', [
             'controller_name' => 'AppController',
+            'genres' => $genres,
         ]);
     }
 
@@ -35,11 +39,11 @@ class AppController extends AbstractController
      * @throws ClientExceptionInterface
      */
     #[Route('/search', name: 'app_search')]
-    public function search(Request $request, OmdbApiService $omdbApiService, EntityManagerInterface $entityManager): Response
+    public function search(Request $request, OmdbApiService $omdbApiService, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository,SessionInterface $session): Response
     {
         $query = $request->query->get('query');
         $data = $omdbApiService->search($query);
-
+        $genres = $categoryRepository->findAll();
         $entries = [];
         if (isset($data['Search'])) {
             foreach ($data['Search'] as $item) {
@@ -48,20 +52,16 @@ class AppController extends AbstractController
                 $entry = $repository->findOneBy(['imDB_id' => $item['imdbID']]);
 
                 if ($entry === null) {
-                    // Créez une nouvelle entrée avec les données de l'API
                     $entry = new ImDBEntry();
                     $entry->setImDBId($item['imdbID']);
                     $entry->setImDBTitle($item['Title']);
                     $entry->setImDBImageUrl($item['Poster']);
                     $entry->setIsSerie($item['Type'] === 'series');
 
-                    // Récupération des détails du film ou de la série
                     $details = $omdbApiService->getSeriesDetails($item['imdbID']);
-
-                    // Ajout des catégories, si elles n'existent pas déjà
                     if (isset($details['Genre'])) {
-                        $genres = explode(', ', $details['Genre']);
-                        foreach ($genres as $genreName) {
+                        $entryGenres = explode(', ', $details['Genre']);
+                        foreach ($entryGenres as $genreName) {
                             $category = $entityManager->getRepository(Category::class)->findOneBy(['name' => $genreName]);
                             if ($category === null) {
                                 $category = new Category();
@@ -79,25 +79,33 @@ class AppController extends AbstractController
 
                 $entries[] = $entry;
             }
+
+            $session->set('search_results', $entries);
+            $selectedGenres = $request->query->all('genres');
+            $isMovie = $request->query->get('movies') !== null;
+            $isSeries = $request->query->get('tv-shows') !== null;
+            if ($selectedGenres || $isMovie || $isSeries) {
+                $entries = $this->filterResults($entries, $selectedGenres, $isMovie, $isSeries);
+            }
+
         }
 
         return $this->render('app/index.html.twig', [
             'entries' => $entries,
+            'genres' => $genres,
+
         ]);
     }
 
     #[Route('/series/{id}/episodes/{season}', name: 'app_series_episodes', defaults: ["season" => 1])]
     public function episodes(string $id, int $season, OmdbApiService $omdbApiService, EntityManagerInterface $entityManager): Response
     {
-        // Récupération des épisodes dans la base de données pour les afficher
         $episodes = $entityManager->getRepository(Episode::class)->findBy(['serie_imDB_id' => $id, 'season' => $season]);
 
-        // Si aucun épisode n'est trouvé dans la base de données, faire une requête à l'API
         if (empty($episodes)) {
             $data = $omdbApiService->getSeasonEpisodes($id, $season);
 
             if (isset($data['Episodes'])) {
-                // Parcours des épisodes et enregistrements dans la base de données
                 foreach ($data['Episodes'] as $episodeData) {
                     $episode = new Episode();
                     $episode->setSerieImDBId($id);
@@ -111,8 +119,6 @@ class AppController extends AbstractController
             }
 
             $entityManager->flush();
-
-            // Récupération des épisodes dans la base de données pour les afficher
             $episodes = $entityManager->getRepository(Episode::class)->findBy(['serie_imDB_id' => $id, 'season' => $season]);
         }
 
@@ -128,6 +134,20 @@ class AppController extends AbstractController
             'currentSeason' => $season,
             'entry' => $entry,
         ]);
+
+    }
+
+
+
+    private function filterResults($entries, $selectedGenres, $isMovie, $isSeries) {
+        return array_filter($entries, function ($entry) use ($selectedGenres, $isMovie, $isSeries) {
+            $entryGenres = $entry->getGenresNames();
+
+            $genreMatch = empty($selectedGenres) || !empty(array_intersect($entryGenres, $selectedGenres));
+            $typeMatch = ($isMovie && !$entry->isIsSerie()) || ($isSeries && $entry->isIsSerie());
+
+            return $genreMatch && $typeMatch;
+        });
     }
 
 }

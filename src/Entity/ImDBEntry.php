@@ -111,4 +111,10 @@ class ImDBEntry
 
         return $this;
     }
+    public function getGenresNames(): array
+    {
+        return $this->category_id->map(function (Category $category) {
+            return $category->getName();
+        })->toArray();
+    }
 }
