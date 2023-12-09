@@ -3,7 +3,7 @@
 {% block title %}Hello AppController!{% endblock %}
 
 {% set movies = app.request.get('movies') %}
-{% set tvShows = app.request.get('tv-shows') %}
+{% set series = app.request.get('series') %}
 
 
 
@@ -27,13 +27,13 @@
 
                 <h2 class="font-heading font-medium text-lg md:text-xl border-b pl-3 mt-4">Filters</h2>
                 <div>
-                    <input type="checkbox" name="movies" {{ movies == "on" or movies == null and not (tvShows) ? 'checked' : '' }} id="movies" class="hidden peer">
+                    <input type="checkbox" name="movies" {{ movies == "on" or movies == null and not (series) ? 'checked' : '' }} id="movies" class="hidden peer">
                     <label for="movies" class="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent cursor-pointer peer-checked:bg-border">
                         <span>Movies</span>
                     </label>
                 </div>
                 <div>
-                    <input type="checkbox" name="tv-shows" {{ tvShows == "on" or tvShows == null and not (movies) ? 'checked' : '' }} id="tv-show" class="hidden peer">
+                    <input type="checkbox" name="series" {{ series == "on" or series == null and not (movies) ? 'checked' : '' }} id="tv-show" class="hidden peer">
                     <label for="tv-show" class="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent cursor-pointer peer-checked:bg-border">
                         <span>Series</span>
                     </label>

@@ -83,7 +83,7 @@ class AppController extends AbstractController
             $session->set('search_results', $entries);
             $selectedGenres = $request->query->all('genres');
             $isMovie = $request->query->get('movies') !== null;
-            $isSeries = $request->query->get('tv-shows') !== null;
+            $isSeries = $request->query->get('series') !== null;
             if ($selectedGenres || $isMovie || $isSeries) {
                 $entries = $this->filterResults($entries, $selectedGenres, $isMovie, $isSeries);
             }
