@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Contact;
 use App\Entity\HomePages;
 use App\Entity\User;
 use App\Entity\WebsiteSettings;
@@ -55,6 +56,7 @@ class DashboardController extends AbstractDashboardController
         if ($this->isGranted('ROLE_ADMIN')) {
             yield MenuItem::linkToCrud('Users', 'fa fa-user', User::class);
             yield MenuItem::linkToCrud('HomePages', 'fa fa-file', HomePages::class);
+            yield MenuItem::linkToCrud('Contact', 'fa fa-file', Contact::class);
             $websiteSettingsId = $this->em->getRepository(WebsiteSettings::class)->findDefault()->getId();
             yield MenuItem::linkToCrud('WebsiteSettings', 'fa fa-cog', WebsiteSettings::class)
                 ->setAction('edit')
