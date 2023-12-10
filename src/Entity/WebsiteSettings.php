@@ -22,7 +22,7 @@ class WebsiteSettings
     #[ORM\Column(type: "integer")]
     public int $singleton_guard = 1;
 
-    #[ORM\OneToOne(targetEntity: HomePages::class)]
+    #[ORM\OneToOne(inversedBy: "websiteSettings", targetEntity: HomePages::class)]
     private $active_homepage;
 
     public function getId(): ?int

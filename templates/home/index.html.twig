@@ -1,35 +1,7 @@
 {% extends '_layouts/base.html.twig' %}
 
 
-
-
 {% block title %}Welcome!{% endblock %}
-
-{# Supprimer les faux posts quand les données seront liées via le backend #}
-{% set posts = [
-    {
-        id: 1,
-        slug: 'hello-world',
-        title: 'Hello World',
-        short: 'This is my first post!',
-        content: 'This is my first post, long version!',
-        author: 'John Doe',
-    }, {
-        id: 2,
-        slug: 'another-post',
-        title: 'Another Post',
-        short: 'This is my second post!',
-        content: 'This is my second post, long version!',
-        author: 'John Doe',
-    }, {
-        id: 3,
-        slug: 'yet-another-post',
-        title: 'Yet Another Post',
-        short: 'This is my third post!',
-        content: 'This is my third post, long version!',
-        author: 'Jane Doe',
-    }
-] %}
 
 {% block body %}
     <div class="container">
@@ -42,11 +14,13 @@
 
             <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6">
                 {% for post in posts %}
-                    <div class="flex flex-col rounded-md border border-input bg-transparent px-4 py-2">
-                        <h3 class="text-xl font-semibold tracking-tight">{{ post.title }}</h3>
-                        <p class="text-xs text-muted-foreground mb-2">{{ post.author }}</p>
-                        <p class="text-sm text-muted-foreground">{{ post.short }}</p>
-                    </div>
+                    <a href="{{ path('app_blog_post_show', {'slug': post.slug}) }}">
+                        <div class="flex flex-col rounded-md border border-input bg-transparent px-4 py-2 cursor-pointer transition-transform hover:scale-105">
+                            <h3 class="text-xl font-semibold tracking-tight">{{ post.title }}</h3>
+                            <p class="text-xs text-muted-foreground mb-2">{{ post.author }}</p>
+                            <p class="text-sm text-muted-foreground">{{ post.summary }}</p>
+                        </div>
+                    </a>
                 {% endfor %}
             </div>
         </section>

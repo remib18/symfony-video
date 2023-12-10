@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\BlogPost;
 use App\Entity\Contact;
 use App\Entity\HomePages;
 use App\Entity\User;
@@ -52,8 +53,9 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable {
 
-        yield MenuItem::linkToRoute('Back to site', 'fa fa-chevron-left', 'app_home');
+        yield MenuItem::linkToRoute('Back to site', 'fa fa-chevron-left', 'app_homepage');
         yield MenuItem::linkToCrud('HomePages', 'fa fa-home', HomePages::class);
+        yield MenuItem::linkToCrud('Blog', 'fa fa-newspaper', BlogPost::class);
         if ($this->isGranted('ROLE_ADMIN')) {
             yield MenuItem::linkToCrud('Users', 'fa fa-user', User::class);
             yield MenuItem::linkToCrud('Contact', 'fa fa-address-book', Contact::class);
