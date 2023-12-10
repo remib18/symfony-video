@@ -23,6 +23,7 @@ class UserProfileType extends AbstractType
                 'label' => 'Image',
                 'mapped' => false,
                 'required' => false,
+
             ])
 
             ->add('Valider',SubmitType::class)
