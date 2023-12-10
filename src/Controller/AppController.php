@@ -97,13 +97,28 @@ class AppController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     */
     #[Route('/series/{id}/episodes/{season}', name: 'app_series_episodes', defaults: ["season" => 1])]
-    public function episodes(string $id, int $season, OmdbApiService $omdbApiService, EntityManagerInterface $entityManager): Response
+    public function episodes(string $id, int $season, request $request, OmdbApiService $omdbApiService, EntityManagerInterface $entityManager): Response
     {
         $episodes = $entityManager->getRepository(Episode::class)->findBy(['serie_imDB_id' => $id, 'season' => $season]);
 
         if (empty($episodes)) {
-            $data = $omdbApiService->getSeasonEpisodes($id, $season);
+            try {
+                $data = $omdbApiService->getSeasonEpisodes($id, $season);
+            } catch (\Exception $e) {
+                error_log($e->getMessage());
+
+                $this->addFlash('error', 'Une erreur est survenue lors de la récupération des données de la série. Veuillez réessayer plus tard.');
+
+                return $this->redirect($request->headers->get('referer'));
+            }
 
             if (isset($data['Episodes'])) {
                 foreach ($data['Episodes'] as $episodeData) {
@@ -136,8 +151,6 @@ class AppController extends AbstractController
         ]);
 
     }
-
-
 
     private function filterResults($entries, $selectedGenres, $isMovie, $isSeries) {
         return array_filter($entries, function ($entry) use ($selectedGenres, $isMovie, $isSeries) {
