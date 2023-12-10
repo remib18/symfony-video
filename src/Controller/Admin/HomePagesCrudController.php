@@ -3,6 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\HomePages;
+use App\Entity\WebsiteSettings;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -12,6 +14,13 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class HomePagesCrudController extends AbstractCrudController
 {
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     public static function getEntityFqcn(): string
     {
         return HomePages::class;
@@ -27,11 +36,12 @@ class HomePagesCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        $actions
-            ->disable(Action::NEW, Action::DELETE, Action::SAVE_AND_RETURN)
-            ->update(Crud::PAGE_EDIT, Action::SAVE_AND_CONTINUE, function (Action $action) {
-                return $action->setIcon('fa fa-save')->setLabel('Save');
+        $actions->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
+            return $action->displayIf(function (HomePages $homePages) {
+                $websiteSettings = $this->entityManager->getRepository(WebsiteSettings::class)->findOneBy([]);
+                return $websiteSettings->getActiveHomepage() !== $homePages;
             });
+        });
 
         if (!$this->isGranted('ROLE_ADMIN')) {
             $actions->disable(Action::NEW, Action::EDIT, Action::DELETE, Action::INDEX);

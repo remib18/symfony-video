@@ -1,0 +1,24 @@
+{% extends '_layouts/base.html.twig' %}
+
+{% block title %}Episodes{% endblock %}
+
+{% block body %}
+    <div class="container grid flex-1 gap-12 md:grid-cols-[200px_1fr] flex-grow">
+        <aside class="hidden w-[200px] flex-col md:flex pt-[.75rem] flex-grow">
+            <form action="{{ path('app_search') }}" method="get" class="flex flex-col items-stretch gap-2 flex-grow">
+            </form>
+        </aside>
+        <main>
+            <h1 class="font-heading text-3xl md:text-4xl border-b">Episodes</h1>
+            {% for episode in episodes %}
+                <div>
+                    <h2>{{ episode.getEpisodeImDBTitle }}</h2>
+                    <p>Episode: {{ episode.getNoEpisode }}</p>
+                </div>
+            {% endfor %}
+            {% if currentSeason < totalSeasons %}
+            {% endif %}
+            <a href="{{ path('app_series_episodes', {'id': entry.getImDBId, 'season': currentSeason + 1}) }}">Afficher la saison suivante</a>
+        </main>
+    </div>
+{% endblock %}
