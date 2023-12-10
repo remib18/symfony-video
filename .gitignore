@@ -29,3 +29,7 @@ Thumbs.db
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+###> app/uploads ###
+/public/uploads/
+###< app/uploads ###
