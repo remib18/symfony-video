@@ -13,9 +13,9 @@ Note: For our college project, the goal is to have a functioning homepage custom
 - [x] Users (login, register)
 - [x] Admin panel
 - [x] Homepage customization with markdown
-- [ ] Blog
-- [ ] Contact form
-- [ ] Media search
+- [x] Blog
+- [x] Contact form
+- [x] Media search
 - [ ] Media watchlist
 - [ ] Media player
 
