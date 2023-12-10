@@ -55,10 +55,6 @@ class HomeController extends AbstractController
             $htmlContent = $converter->convert($markdownContent);
         } catch (CommonMarkException) {
             $htmlContent = '<p>Une erreur s\'est produite lors de la conversion du contenu.</p>';
-
-
-
-
         }
 
         $contact= new Contact();
