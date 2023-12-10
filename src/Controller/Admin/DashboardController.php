@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\BlogPost;
 use App\Entity\Contact;
 use App\Entity\HomePages;
 use App\Entity\User;
@@ -18,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardController extends AbstractDashboardController
 {
-    private $em;
+    private EntityManagerInterface $em;
 
     public function __construct(EntityManagerInterface $em)
     {
@@ -32,14 +33,13 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
+        $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
         if ($this->isGranted('ROLE_ADMIN')) {
-            $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
             return $this->redirect($adminUrlGenerator->setController(UserCrudController::class)->generateUrl());
         }
 
         if ($this->isGranted('ROLE_WEBMASTER')) {
-            //faire redirect to webmasters page
-            return parent::index();
+            return $this->redirect($adminUrlGenerator->setController(BlogPostCrudController::class)->generateUrl());
         }
 
         return $this->redirectToRoute('app_app');
@@ -52,11 +52,14 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable {
 
-        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
+        yield MenuItem::linkToRoute('Back to site', 'fa fa-chevron-left', 'app_homepage');
+        if ($this->isGranted('ROLE_ADMIN')) {
+            yield MenuItem::linkToCrud('HomePages', 'fa fa-home', HomePages::class);
+        }
+        yield MenuItem::linkToCrud('Blog', 'fa fa-newspaper', BlogPost::class);
         if ($this->isGranted('ROLE_ADMIN')) {
             yield MenuItem::linkToCrud('Users', 'fa fa-user', User::class);
-            yield MenuItem::linkToCrud('HomePages', 'fa fa-file', HomePages::class);
-            yield MenuItem::linkToCrud('Contact', 'fa fa-file', Contact::class);
+            yield MenuItem::linkToCrud('Contact', 'fa fa-address-book', Contact::class);
             $websiteSettingsId = $this->em->getRepository(WebsiteSettings::class)->findDefault()->getId();
             yield MenuItem::linkToCrud('WebsiteSettings', 'fa fa-cog', WebsiteSettings::class)
                 ->setAction('edit')

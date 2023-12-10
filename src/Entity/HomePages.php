@@ -44,6 +44,13 @@ class HomePages
         return $this->markdown;
     }
 
+    public function setMarkdown(?string $markdown): self
+    {
+        $this->markdown = $markdown;
+
+        return $this;
+    }
+
     public function setWebsiteSettings(?WebsiteSettings $websiteSettings): self
     {
 

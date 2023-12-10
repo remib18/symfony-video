@@ -1,0 +1,59 @@
+{% extends '_layouts/base.html.twig' %}
+
+{% block title %}{{ blog_post.title }}{% endblock %}
+
+{% block body %}
+
+    <div class="container relative max-w-3xl py-6 lg:py-10">
+
+        <a
+            class="items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background hover:bg-accent hover:text-accent-foreground h-10 py-2 px-4 absolute left-[-200px] top-14 hidden xl:inline-flex"
+            href="{{ path('app_homepage') }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Retour à l'accueil
+        </a>
+
+        <div>
+            <time
+                datetime="{{ blog_post.updatedAt.format('Y:m:d') }}T00:00:00.000Z"
+                class="block text-sm text-muted-foreground">
+                Published on {{ blog_post.updatedAt.format('M j, Y') }}
+            </time>
+            <h1 class="mt-2 inline-block font-heading font-bold text-4xl leading-tight lg:text-5xl">
+                {{ blog_post.title }}
+            </h1>
+            <div class="mt-4 flex space-x-4">
+                <div class="flex items-center space-x-2 text-sm">
+                    {% set author_profile_image = blog_post.author.imageLink|default('') %}
+                    <img alt="author profile image" loading="lazy" width="42" height="42" decoding="async" data-nimg="1"
+                         class="rounded-full bg-white aspect-square object-cover" style="color:transparent"
+                         src="{{ asset('uploads/images/' ~ author_profile_image ) }}">
+                    <div class="flex-1 text-left leading-tight">
+                        <p class="font-medium">{{ blog_post.author|default('deleted user') }}</p>
+                        <p class="text-[12px] text-muted-foreground">{{ blog_post.author.email|default('no_contact') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <img
+                height="400"
+                class="my-8 rounded-md border bg-muted transition-colors aspect-video w-full object-cover"
+                src="{{ asset('uploads/images/' ~ blog_post.image) }}"
+                alt="Preview for {{ blog_post.title }}">
+
+        {{ blog_post.content|raw }}
+
+        <hr class="mt-12">
+
+        <div class="flex justify-center py-6 lg:py-10">
+            <a class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background hover:bg-accent hover:text-accent-foreground h-10 py-2 px-4"
+               href="{{ path('app_homepage') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     class="mr-2 h-4 w-4">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>Retour à l'accueil</a></div>
+    </div>
+
+{% endblock %}

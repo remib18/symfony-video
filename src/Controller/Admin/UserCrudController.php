@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -68,6 +69,11 @@ class UserCrudController extends AbstractCrudController
                         }
                         return null;
                     }),
+                ImageField::new('imageLink', 'Image')
+                    ->setBasePath('/uploads/images')
+                    ->setUploadDir('public/uploads/images')
+                    ->setUploadedFileNamePattern('[randomhash].[extension]')
+                    ->setRequired(false),
                 TextField::new('password')
                     ->setFormType(RepeatedType::class)
                     ->setFormTypeOptions([

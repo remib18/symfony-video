@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\BlogPost;
 use App\Entity\Contact;
 use App\Entity\WebsiteSettings;
 use App\Form\ContactType;
@@ -12,9 +13,17 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\MarkdownConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use League\CommonMark\CommonMarkConverter;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class HomeController extends AbstractController
 {
@@ -22,7 +31,15 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_homepage')]
     public function index(EntityManagerInterface $entityManager, Request $request): Response
     {
-        // Récupération du contenu Markdown dans la base de données
+        return $this->render('home/index.html.twig', [
+            'content' => $this->getHomeMarkdownContent($entityManager),
+            'form'=> $this->getContactForm($entityManager, $request)->createView(),
+            'posts' => $this->getLastBlogPosts($entityManager),
+        ]);
+    }
+
+    private function getHomeMarkdownContent(EntityManagerInterface $entityManager): string
+    {
         $websiteSettings = $entityManager->getRepository(WebsiteSettings::class)->findOneBy([]);
 
         if ($websiteSettings === null) {
@@ -47,12 +64,13 @@ class HomeController extends AbstractController
             $htmlContent = $converter->convert($markdownContent);
         } catch (CommonMarkException) {
             $htmlContent = '<p>Une erreur s\'est produite lors de la conversion du contenu.</p>';
-
-
-
-
         }
 
+        return $htmlContent;
+    }
+
+    private function getContactForm(EntityManagerInterface $entityManager, Request $request): FormInterface
+    {
         $contact= new Contact();
         $form= $this->createForm(ContactType::class,$contact);
 
@@ -69,12 +87,11 @@ class HomeController extends AbstractController
 
         }
 
-        // On passe le contenu HTML à la vue
-        return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
-            'content' => $htmlContent,
-            'form'=> $form ->createView(),
+        return $form;
+    }
 
-        ]);
+    private function getLastBlogPosts(EntityManagerInterface $entityManager): array
+    {
+        return $entityManager->getRepository(BlogPost::class)->findLatest();
     }
 }
