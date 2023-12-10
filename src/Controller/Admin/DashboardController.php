@@ -33,14 +33,13 @@ class DashboardController extends AbstractDashboardController
     #[Route('/admin', name: 'admin')]
     public function index(): Response
     {
+        $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
         if ($this->isGranted('ROLE_ADMIN')) {
-            $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
             return $this->redirect($adminUrlGenerator->setController(UserCrudController::class)->generateUrl());
         }
 
         if ($this->isGranted('ROLE_WEBMASTER')) {
-            //faire redirect to webmasters page
-            return parent::index();
+            return $this->redirect($adminUrlGenerator->setController(BlogPostCrudController::class)->generateUrl());
         }
 
         return $this->redirectToRoute('app_app');
@@ -54,7 +53,9 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable {
 
         yield MenuItem::linkToRoute('Back to site', 'fa fa-chevron-left', 'app_homepage');
-        yield MenuItem::linkToCrud('HomePages', 'fa fa-home', HomePages::class);
+        if ($this->isGranted('ROLE_ADMIN')) {
+            yield MenuItem::linkToCrud('HomePages', 'fa fa-home', HomePages::class);
+        }
         yield MenuItem::linkToCrud('Blog', 'fa fa-newspaper', BlogPost::class);
         if ($this->isGranted('ROLE_ADMIN')) {
             yield MenuItem::linkToCrud('Users', 'fa fa-user', User::class);
