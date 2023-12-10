@@ -3,7 +3,7 @@
 {% block title %}Profil de {{ app.user.firstname }} {{ app.user.lastname }}{% endblock %}
 
 {% block body %}
-<div class="grid xs4 container">
+    <div class="grid xs4 container">
     {% for message in app.flashes('message') %}
         <div class="col-xs4">
             <div class="p-3 my-2 rounded-2 success">{{message}}</div>
@@ -14,7 +14,13 @@
     </div>
 
     <div class="col-xs1">Image :</div>
-    <div class="col-xs3">{{ app.user.imagelink }}</div>
+    <div class="col-xs3">
+        {% if app.user.imageLink %}
+            <img src="{{ asset('uploads/profile_images/' ~ app.user.imageLink) }}" alt="User Image">
+        {% else %}
+            No image uploaded
+        {% endif %}
+    </div>
     <div class="col-xs1">Nom :</div>
     <div class="col-xs3">{{ app.user.firstname }}</div>
     <div class="col-xs1">Prénom :</div>

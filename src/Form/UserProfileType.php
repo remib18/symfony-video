@@ -21,8 +21,8 @@ class UserProfileType extends AbstractType
 
             ->add('imageLink', FileType::class, [
                 'label' => 'Image',
-                'mapped' => false,
                 'required' => false,
+                'data_class' => null,
 
             ])
 
