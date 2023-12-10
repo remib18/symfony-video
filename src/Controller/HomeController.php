@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Contact;
 use App\Entity\WebsiteSettings;
+use App\Form\ContactType;
 use Doctrine\ORM\EntityManagerInterface;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Exception\CommonMarkException;
@@ -10,6 +12,7 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\MarkdownConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -17,7 +20,7 @@ class HomeController extends AbstractController
 {
 
     #[Route('/', name: 'app_homepage')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(EntityManagerInterface $entityManager, Request $request): Response
     {
         // Récupération du contenu Markdown dans la base de données
         $websiteSettings = $entityManager->getRepository(WebsiteSettings::class)->findOneBy([]);
@@ -44,12 +47,34 @@ class HomeController extends AbstractController
             $htmlContent = $converter->convert($markdownContent);
         } catch (CommonMarkException) {
             $htmlContent = '<p>Une erreur s\'est produite lors de la conversion du contenu.</p>';
+
+
+
+
+        }
+
+        $contact= new Contact();
+        $form= $this->createForm(ContactType::class,$contact);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $contact = $form->getData();
+           $entityManager->persist($contact);
+            $entityManager->flush();
+
+            $this->addFlash('success','Message envoyé!');
+
+           // return $this ->redirectToRoute('home/index');
+
         }
 
         // On passe le contenu HTML à la vue
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'content' => $htmlContent,
+            'form'=> $form ->createView(),
+
         ]);
     }
 }
