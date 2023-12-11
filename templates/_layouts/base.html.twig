@@ -66,8 +66,11 @@
                             Contact
                         </a>
                         {% if is_granted('ROLE_USER') %}
+                            <a href="{{ path('app_user_profile') }}" class="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm {{ app.request.attributes.get('_route') == 'app_user_profile' ? 'text-foreground' : 'text-foreground/60' }}">
+                                Profile
+                            </a>
                             <a href="{{ path('app_app') }}" class="flex items-center text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm {{ app.request.attributes.get('_route') == 'app_app' ? 'text-foreground' : 'text-foreground/60' }}">
-                                App
+                                Medias
                             </a>
                         {% endif %}
                         {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_WEBMASTER') %}

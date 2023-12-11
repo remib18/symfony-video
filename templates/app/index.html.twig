@@ -23,7 +23,6 @@
                             autocomplete="search"
                             class="placeholder:text-muted-foreground focus-visible:outline-none text-sm w-full bg-transparent">
                 </div>
-                <button type="submit">Rechercher</button>
 
                 <h2 class="font-heading font-medium text-lg md:text-xl border-b pl-3 mt-4">Filters</h2>
                 <div>
@@ -46,13 +45,14 @@
                             <input
                                     type="checkbox"
                                     name="genres[]"
-                                    value="{{ attribute(genre, 'name') is defined ? genre.name : genre }}"
-                                    id="genre-{{ attribute(genre, 'id') is defined ? genre.id : loop.index }}"
+                                    {{ genre.name in app.request.get('genres') ? 'checked' : '' }}
+                                    value="{{ genre.name }}"
+                                    id="genre-{{ genre.id }}"
                                     class="hidden peer"
                             >
-                            <label for="genre-{{ attribute(genre, 'id') is defined ? genre.id : loop.index }}"
+                            <label for="genre-{{ genre.id }}"
                                    class="group flex items-center rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground transparent cursor-pointer peer-checked:bg-border">
-                                <span>{{ attribute(genre, 'name') is defined ? genre.name : genre }}</span>
+                                <span>{{ genre.name }}</span>
                             </label>
                         </div>
                     {% endfor %}
