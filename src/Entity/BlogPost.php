@@ -26,14 +26,14 @@ class BlogPost
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
 
-    #[ORM\Column()]
+    #[ORM\Column(type: 'text')]
     private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'blogPosts')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
 
-    #[ORM\Column(length: 511)]
+    #[ORM\Column(length: 2047)]
     private ?string $summary = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]

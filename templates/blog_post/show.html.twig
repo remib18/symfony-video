@@ -36,11 +36,13 @@
             </div>
         </div>
 
-        <img
-                height="400"
-                class="my-8 rounded-md border bg-muted transition-colors aspect-video w-full object-cover"
-                src="{{ asset('uploads/images/' ~ blog_post.image) }}"
-                alt="Preview for {{ blog_post.title }}">
+        {% if blog_post.image is defined and blog_post.image != '' %}
+            <img
+                    height="400"
+                    class="my-8 rounded-md border bg-muted transition-colors aspect-video w-full object-cover"
+                    src="{{ asset('uploads/images/' ~ blog_post.image) }}"
+                    alt="Preview for {{ blog_post.title }}">
+        {% endif %}
 
         {{ blog_post.content|raw }}
 
