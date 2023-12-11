@@ -1,0 +1,152 @@
+{% extends '_layouts/base.html.twig' %}
+
+{% block title %}My account{% endblock %}
+
+{% block body %}
+    <div class="container">
+
+        <div class="grid items-start gap-8">
+            <div class="flex items-center justify-between px-2">
+                <div class="grid gap-1">
+                    <h1 class="font-heading text-3xl md:text-4xl font-bold">My account</h1>
+                    <p class="text-lg text-muted-foreground">Manage your account.</p>
+                </div>
+            </div>
+
+            <div class="grid gap-10">
+                {{ form_start(profilePictureForm) }}
+                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                        <div class="flex flex-col space-y-1.5 p-6">
+                            <h2 class="text-lg font-semibold leading-none tracking-tight">Upload a profile picture</h2>
+                            <p class="text-sm text-muted-foreground">Please upload your image.</p>
+                        </div>
+
+                        <h3 class="text-sm font-medium leading-none pl-6">Current profile picture</h3>
+                        <img src="{{ asset('uploads/images/' ~ app.user.imageLink) }}" alt="Profile picture" class="ml-6 my-2 w-10 h-10 object-cover rounded-full">
+
+                        <div class="p-6 pt-0">
+                            {{ form_row(profilePictureForm.imageLink, {
+                                'attr': {
+                                    'class': 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50'
+                                },
+                                'label': 'New profile picture',
+                                'label_attr': {
+                                    'class': 'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
+                                }
+                            }) }}
+                        </div>
+                        <div class="flex items-center p-6 pt-0">
+                            <button
+                                    type="submit"
+                                    class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                {{ form_end(profilePictureForm) }}
+            </div>
+
+            {#
+            <div class="grid gap-10">
+                {{ form_start(passwordForm) }}
+                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                        <div class="flex flex-col space-y-1.5 p-6">
+                            <h2 class="text-lg font-semibold leading-none tracking-tight">Update your password</h2>
+                            <p class="text-sm text-muted-foreground">Please update your password.</p>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <label for="user_profile_password_oldPassword" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                Current password
+                            </label>
+                            {{ form_widget(passwordForm.oldPassword, {
+                                'attr': {
+                                    'class': 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+                                    'placeholder': '••••••••',
+                                    'autoComplete': 'password',
+                                    'autoCapitalize': 'none'
+                                }
+                            }) }}
+                            <label for="new-password" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                New password
+                            </label>
+                            {{ form_widget(passwordForm.newPassword, {
+                                'attr': {
+                                    'class': 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+                                    'placeholder': '••••••••',
+                                    'autoComplete': 'new-password',
+                                    'autoCapitalize': 'none'
+                                }
+                            }) }}
+                        </div>
+                        <div class="flex items-center p-6 pt-0">
+                            <button
+                                    type="submit"
+                                    class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                {{ form_end(passwordForm) }}
+            </div>
+            #}
+
+            <div class="grid gap-10">
+                {{ form_start(infosForm) }}
+                    <div class="rounded-lg border bg-card text-card-foreground shadow-sm">
+                        <div class="flex flex-col space-y-1.5 p-6">
+                            <h2 class="text-lg font-semibold leading-none tracking-tight">Update your information</h2>
+                            <p class="text-sm text-muted-foreground">Please update your information.</p>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <label for="user_profile_info_firstname" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                First name
+                            </label>
+                            {{ form_widget(infosForm.firstname, {
+                                'attr': {
+                                    'class': 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+                                    'autoComplete': 'firstname',
+                                    'autoCapitalize': 'none'
+                                },
+                            }) }}
+                            <label for="user_profile_info_lastname" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                Last name
+                            </label>
+                            {{ form_widget(infosForm.lastname, {
+                                'attr': {
+                                    'class': 'flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+                                    'autoComplete': 'lastname',
+                                    'autoCapitalize': 'none'
+                                },
+                            }) }}
+                        </div>
+                        <div class="flex items-center p-6 pt-0">
+                            <button
+                                    type="submit"
+                                    class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4">
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                {{ form_end(infosForm) }}
+            </div>
+
+            <div class="grid gap-10">
+                <form action="{{ path('app_user_profile_delete') }}" method="post">
+                    <div class="rounded-lg border border-red-500 bg-card text-card-foreground shadow-sm">
+                        <div class="flex flex-col space-y-1.5 p-6">
+                            <h2 class="text-lg font-semibold leading-none tracking-tight">Delete your account</h2>
+                            <p class="text-sm text-muted-foreground">Please delete your account.</p>
+                        </div>
+                        <div class="flex items-center p-6 pt-0">
+                            <button
+                                    type="submit"
+                                    class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-red-500 text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4">
+                                Delete my account
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
