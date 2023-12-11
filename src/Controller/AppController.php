@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Repository\ImDBEntryRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Entity\Category;
 use App\Entity\Episode;
@@ -20,17 +21,6 @@ use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class AppController extends AbstractController
 {
-    #[Route('/app', name: 'app_app')]
-    public function app(CategoryRepository $categoryRepository): Response
-    {
-        $genres = $categoryRepository->findAll();
-
-        return $this->render('app/index.html.twig', [
-            'controller_name' => 'AppController',
-            'genres' => $genres,
-        ]);
-    }
-
     /**
      * @throws TransportExceptionInterface
      * @throws ServerExceptionInterface
@@ -38,56 +28,58 @@ class AppController extends AbstractController
      * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
      */
-    #[Route('/search', name: 'app_search')]
-    public function search(Request $request, OmdbApiService $omdbApiService, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository,SessionInterface $session): Response
+    #[Route('/app', name: 'app_app')]
+    public function search(Request $request, OmdbApiService $omdbApiService, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository,SessionInterface $session, ImDBEntryRepository $imDBEntryRepository): Response
     {
         $query = $request->query->get('query');
-        $data = $omdbApiService->search($query);
         $genres = $categoryRepository->findAll();
         $entries = [];
-        if (isset($data['Search'])) {
-            foreach ($data['Search'] as $item) {
-                // Recherche dans la base de données
-                $repository = $entityManager->getRepository(ImDBEntry::class);
-                $entry = $repository->findOneBy(['imDB_id' => $item['imdbID']]);
+        if ($query) {
+            $data = $omdbApiService->search($query);
+            if (isset($data['Search'])) {
+                foreach ($data['Search'] as $item) {
+                    // Recherche dans la base de données
+                    $repository = $entityManager->getRepository(ImDBEntry::class);
+                    $entry = $repository->findOneBy(['imDB_id' => $item['imdbID']]);
 
-                if ($entry === null) {
-                    $entry = new ImDBEntry();
-                    $entry->setImDBId($item['imdbID']);
-                    $entry->setImDBTitle($item['Title']);
-                    $entry->setImDBImageUrl($item['Poster']);
-                    $entry->setIsSerie($item['Type'] === 'series');
+                    if ($entry === null) {
+                        $entry = new ImDBEntry();
+                        $entry->setImDBId($item['imdbID']);
+                        $entry->setImDBTitle($item['Title']);
+                        $entry->setImDBImageUrl($item['Poster']);
+                        $entry->setIsSerie($item['Type'] === 'series');
 
-                    $details = $omdbApiService->getSeriesDetails($item['imdbID']);
-                    if (isset($details['Genre'])) {
-                        $entryGenres = explode(', ', $details['Genre']);
-                        foreach ($entryGenres as $genreName) {
-                            $category = $entityManager->getRepository(Category::class)->findOneBy(['name' => $genreName]);
-                            if ($category === null) {
-                                $category = new Category();
-                                $category->setName($genreName);
-                                $category->setSlug(strtolower(str_replace(' ', '-', $genreName)));
-                                $entityManager->persist($category);
+                        $details = $omdbApiService->getSeriesDetails($item['imdbID']);
+                        if (isset($details['Genre'])) {
+                            $entryGenres = explode(', ', $details['Genre']);
+                            foreach ($entryGenres as $genreName) {
+                                $category = $entityManager->getRepository(Category::class)->findOneBy(['name' => $genreName]);
+                                if ($category === null) {
+                                    $category = new Category();
+                                    $category->setName($genreName);
+                                    $category->setSlug(strtolower(str_replace(' ', '-', $genreName)));
+                                    $entityManager->persist($category);
+                                }
+                                $entry->addCategoryId($category);
                             }
-                            $entry->addCategoryId($category);
                         }
+
+                        $entityManager->persist($entry);
+                        $entityManager->flush();
                     }
 
-                    $entityManager->persist($entry);
-                    $entityManager->flush();
+                    $entries[] = $entry;
                 }
-
-                $entries[] = $entry;
+                $session->set('search_results', $entries);
             }
-
-            $session->set('search_results', $entries);
-            $selectedGenres = $request->query->all('genres');
-            $isMovie = $request->query->get('movies') !== null;
-            $isSeries = $request->query->get('series') !== null;
-            if ($selectedGenres || $isMovie || $isSeries) {
-                $entries = $this->filterResults($entries, $selectedGenres, $isMovie, $isSeries);
-            }
-
+        } else {
+            $entries = $imDBEntryRepository->findAll();
+        }
+        $selectedGenres = $request->query->all('genres');
+        $isMovie = $request->query->get('movies') !== null;
+        $isSeries = $request->query->get('series') !== null;
+        if ($selectedGenres || $isMovie || $isSeries) {
+            $entries = $this->filterResults($entries, $selectedGenres, $isMovie, $isSeries);
         }
 
         return $this->render('app/index.html.twig', [
